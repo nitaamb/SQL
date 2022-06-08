@@ -82,3 +82,106 @@ Output:
 |  2012 | Labels                         |  10007040 |
 |  2012 | Rubber Bands                   |   3837880 |
 +-------+--------------------------------+-----------+ 
+
+
+
+/*
+  Promotion Effectiveness and Efficiency by Years
+  Query ini digunakan untuk melihat efektifitas dan efisiensi dari promosi yang sudah dilakukan selama ini
+  Efektifitas dan efisiensi dari promosi yang dilakukan dianalisa berdasarkan Burn Rate (membandigkan total value promosi yang dikeluarkan terhadap total sales yang diperoleh)
+*/
+
+SELECT
+	YEAR(order_date) AS years,
+	SUM(sales) AS sales,
+	SUM(discount_value) AS promotion_value,
+	ROUND(SUM(discount_value)/SUM(sales)*100, 2) AS burn_rate_percentage
+FROM
+	dqlab_sales_store
+WHERE
+	order_status = 'Order Finished'
+GROUP BY
+	years;
+
+Output:
++-------+------------+-----------------+----------------------+
+| years | sales      | promotion_value | burn_rate_percentage |
++-------+------------+-----------------+----------------------+
+|  2009 | 4613872681 |       214330327 |                 4.65 |
+|  2010 | 4059100607 |       197506939 |                 4.87 |
+|  2011 | 4112036186 |       214611556 |                 5.22 |
+|  2012 | 4482983158 |       225867642 |                 5.04 |
++-------+------------+-----------------+----------------------+
+
+
+
+/*
+  Promotion Effectiveness and Efficiency by Product Sub Category
+  Query ini digunakan untuk melihat efektifitas dan efisiensi dari promosi yang sudah dilakukan pada tahun 2012 (dikelompokkan berdasarkan Product Sub Category)
+*/
+
+SELECT
+	YEAR(order_date) AS years,
+	product_sub_category,
+	product_category,
+	SUM(sales) AS sales, SUM(discount_value) AS promotion_value,
+	ROUND(SUM(discount_value)/SUM(sales)*100, 2) AS burn_rate_percentage
+FROM
+	dqlab_sales_store
+WHERE
+	YEAR(order_date) = 2012 AND order_status = 'Order Finished'
+GROUP BY
+	years,
+	product_sub_category,product_category
+ORDER BY
+	sales DESC;
+
+Output:
++-------+--------------------------------+------------------+-----------+-----------------+----------------------+
+| years | product_sub_category           | product_category | sales     | promotion_value | burn_rate_percentage |
++-------+--------------------------------+------------------+-----------+-----------------+----------------------+
+|  2012 | Office Machines                | Technology       | 811427140 |        46616695 |                 5.75 |
+|  2012 | Chairs & Chairmats             | Furniture        | 654168740 |        26623882 |                 4.07 |
+|  2012 | Telephones and Communication   | Technology       | 422287514 |        18800188 |                 4.45 |
+|  2012 | Tables                         | Furniture        | 388993784 |        16348689 |                 4.20 |
+|  2012 | Binders and Binder Accessories | Office Supplies  | 363879200 |        22338980 |                 6.14 |
+|  2012 | Storage & Organization         | Office Supplies  | 356714140 |        18802166 |                 5.27 |
+|  2012 | Computer Peripherals           | Technology       | 308014340 |        15333293 |                 4.98 |
+|  2012 | Copiers and Fax                | Technology       | 292489800 |        14530870 |                 4.97 |
+|  2012 | Appliances                     | Office Supplies  | 266131100 |        14393300 |                 5.41 |
+|  2012 | Office Furnishings             | Furniture        | 178927480 |         8233849 |                 4.60 |
+|  2012 | Bookcases                      | Furniture        | 159984680 |        10024365 |                 6.27 |
+|  2012 | Paper                          | Office Supplies  | 126896160 |         6224694 |                 4.91 |
+|  2012 | Envelopes                      | Office Supplies  |  58629280 |         2334321 |                 3.98 |
+|  2012 | Pens & Art Supplies            | Office Supplies  |  43818480 |         2343501 |                 5.35 |
+|  2012 | Scissors, Rulers and Trimmers  | Office Supplies  |  36776400 |         2349280 |                 6.39 |
+|  2012 | Labels                         | Office Supplies  |  10007040 |          452245 |                 4.52 |
+|  2012 | Rubber Bands                   | Office Supplies  |   3837880 |          117324 |                 3.06 |
++-------+--------------------------------+------------------+-----------+-----------------+----------------------+
+
+
+
+/*
+  Customers Transactions per Year
+  Query ini digunakan untuk mengetahui jumlah customer (number_of_customer) yang bertransaksi setiap tahunnya (2009 sampai 2012)
+*/
+
+SELECT
+	YEAR(order_date) AS years,
+	COUNT(DISTINCT customer) AS number_of_customer
+FROM
+	dqlab_sales_store
+WHERE
+	order_status = 'Order Finished'
+GROUP BY
+	years;
+
+Output:
++-------+--------------------+
+| years | number_of_customer |
++-------+--------------------+
+|  2009 |                585 |
+|  2010 |                593 |
+|  2011 |                581 |
+|  2012 |                594 |
++-------+--------------------+
